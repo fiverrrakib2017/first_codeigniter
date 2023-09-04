@@ -76,29 +76,32 @@
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title" id="exampleModalLabel">Delete Student </h5>
+				<h5 class="modal-title" id="exampleModalLabel">Add Student </h5>
 				<button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
 			</div>
-			<div class="modal-body">
-				<form action="">
-					<div class="form-group">
-						<label for="">Student Name</label>
-						<input type="text"  placeholder="Enter Student Name" class="form-control">
-					</div>
-					<div class="form-group">
-						<label for="">Student Image</label>
-						<input type="file" placeholder="Student Image" class="form-control">
-					</div>
-					<div class="form-group">
-						<label for="">Class</label>
-						<select type="file" class="form-control">
-							<option value="">----Select---</option>
-							<option value="Hon's Final Year">Hon's Final Year</option>
-							<option value="HSC">HSC</option>
-							<option value="SSC">SSC</option>
-						</select>
-					</div>
-				</form>
+			<div class="modal-body card shadow">
+			<form id="addStudentForm" enctype="multipart/form-data">
+                    <div class="form-group mb-3 ">
+                        <label for="name">Student Name</label>
+                        <input type="text" id="name" name="name" placeholder="Enter Student Name" class="form-control">
+                    </div>
+                    <div class="form-group mb-3 ">
+                        <label for="image">Student Image</label>
+                        <input type="file" id="image" name="image" class="form-control">
+                    </div>
+					<div class="form-group mb-3 ">
+                        <img src="https://www.pngitem.com/pimgs/m/35-350426_profile-icon-png-default-profile-picture-png-transparent.png" alt="" class="img-fluid img-thumbnail" id="imgPreview" style="max-width: 200px; height: 100px;">
+                    </div>
+                    <div class="form-group mb-3 ">
+                        <label for="student_class">Class</label>
+                        <select id="student_class" name="student_class" class="form-select">
+                            <option value="">----Select---</option>
+                            <option value="Hon's Final Year">Hon's Final Year</option>
+                            <option value="HSC">HSC</option>
+                            <option value="SSC">SSC</option>
+                        </select>
+                    </div>
+                </form>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Close</button>
@@ -139,6 +142,52 @@ $(document).ready(function(){
                 toastr.error('AJAX Error: ' + error);
             }
         });
+	});
+	/* Student Add Ajax call  */
+	 //preview image beore uploaded
+	 image.onchange = evt => {
+			const [file] = image.files
+			if (file) {
+				imgPreview.src = URL.createObjectURL(file)
+			}
+    	}
+	$(document).on('click','#addBtn',function(){
+		// GET the form data
+		var student_name=$("#name").val();
+		var imageData = $("#image").prop('files')[0];
+		var student_class=$("#student_class").val();
+		var add_student_data = "0";
+
+		/* Create a Form Data and append this  */
+        var form_data = new FormData();
+        form_data.append('file', imageData);
+        form_data.append('student_name', student_name);
+        form_data.append('student_class', student_class);
+		form_data.append('add_student_data', add_student_data);
+		/*Ajax calll Request Start */
+		$.ajax({
+			type: 'POST',
+			url:'<?=base_url('student/add')?>',
+			data: form_data,
+			dataType: 'script',
+			cache: false,
+			contentType: false,
+			processData: false,
+			success: function(response) {
+				if (response == 1) {
+					alert('Image Uploaded successfully');
+					setTimeout(() => {
+						location.reload();
+					}, 1000);
+				}else if(response == 2){alert("Large file not allow")}
+				else if(response == 3){alert("Error moving the uploaded file")}
+				else if(response == 0){alert("Invalid file extension")}
+				else {
+					alert('Something was wrong!!1 ');
+				}
+			}
+        });
+		/*Ajax calll Request End */
 	});
 });
 

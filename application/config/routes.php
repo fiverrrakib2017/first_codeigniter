@@ -57,4 +57,5 @@ $route['translate_uri_dashes'] = FALSE;
 $route=array(
     'student/home'=> 'Student',		
     'student/delete'=> 'Student/delete_student',		
+    'student/add'=> 'Student/add_student',		
 );
