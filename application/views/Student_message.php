@@ -29,6 +29,7 @@
 				<table class="table table-bordered" >
                     <thead class="bg-success text-white">
                         <th>Student Name</th>
+                        <th>Image</th>
                         <th>Class</th>
                         <th>Action</th>
                     </thead>
@@ -36,6 +37,7 @@
 					<?php foreach ($data as $student): ?>
                         <tr>
                             <td><?php echo $student['name']; ?></td>
+                            <td><img src=" <?php echo base_url();?>/<?php echo $student['file_path'];?>" height="50px" width="100px" class="rounded"/></td>
                             <td><?php echo $student['student_class']; ?></td>
 							<td>
 								<a href="" class="btn btn-primary">Edit</a>
