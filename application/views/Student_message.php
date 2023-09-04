@@ -158,38 +158,46 @@ $(document).ready(function(){
 		var student_name=$("#name").val();
 		var imageData = $("#image").prop('files')[0];
 		var student_class=$("#student_class").val();
-		var add_student_data = "0";
 
-		/* Create a Form Data and append this  */
-        var form_data = new FormData();
-        form_data.append('file', imageData);
-        form_data.append('student_name', student_name);
-        form_data.append('student_class', student_class);
-		form_data.append('add_student_data', add_student_data);
-		/*Ajax calll Request Start */
-		$.ajax({
-			type: 'POST',
-			url:'<?=base_url('student/add')?>',
-			data: form_data,
-			dataType: 'script',
-			cache: false,
-			contentType: false,
-			processData: false,
-			success: function(response) {
-				if (response == 1) {
-					alert('Image Uploaded successfully');
-					setTimeout(() => {
-						location.reload();
-					}, 1000);
-				}else if(response == 2){alert("Large file not allow")}
-				else if(response == 3){alert("Error moving the uploaded file")}
-				else if(response == 0){alert("Invalid file extension")}
-				else {
-					alert('Something was wrong!!1 ');
+		/* Validation ruls  */
+		if (student_name.length==0) {
+			alert('Name is Require');
+		}else if(student_class.length==0){
+			alert('Student Class is Require');
+		}else{
+			var add_student_data = "0";
+
+			/* Create a Form Data and append this  */
+			var form_data = new FormData();
+			form_data.append('file', imageData);
+			form_data.append('student_name', student_name);
+			form_data.append('student_class', student_class);
+			form_data.append('add_student_data', add_student_data);
+			/*Ajax calll Request Start */
+			$.ajax({
+				type: 'POST',
+				url:'<?=base_url('student/add')?>',
+				data: form_data,
+				dataType: 'script',
+				cache: false,
+				contentType: false,
+				processData: false,
+				success: function(response) {
+					if (response == 1) {
+						alert('Image Uploaded successfully');
+						setTimeout(() => {
+							location.reload();
+						}, 1000);
+					}else if(response == 2){alert("Large file not allow")}
+					else if(response == 3){alert("Error moving the uploaded file")}
+					else if(response == 0){alert("Invalid file extension")}
+					else {
+						alert('Something was wrong!!1 ');
+					}
 				}
-			}
-        });
-		/*Ajax calll Request End */
+			});
+			/*Ajax calll Request End */
+		}
 	});
 });
 

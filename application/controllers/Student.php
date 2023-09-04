@@ -33,7 +33,7 @@ class Student extends CI_Controller
             $student_id = $this->input->post('id');
 
             // Load the Student_model
-            $this->load->model('Student_model');
+           // $this->load->model('Student_model');
 
             // Call the model's method to delete the student
             $result = $this->Student_model->delete_student($student_id);
@@ -83,11 +83,11 @@ class Student extends CI_Controller
     
                         echo 1;
                     } else {
-                        //echo 'Error moving the uploaded file.'; 
+                        //'Error moving the uploaded file.'; 
                         echo 3;
                     }
                 }else{
-                    //echo 'Invalid file extension.';
+                    // 'Invalid file extension.';
                     echo 0;
                 }
             }
