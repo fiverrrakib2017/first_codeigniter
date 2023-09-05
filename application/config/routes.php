@@ -58,4 +58,5 @@ $route=array(
     'student/home'=> 'Student',		
     'student/delete'=> 'Student/delete_student',		
     'student/add'=> 'Student/add_student',		
+    'student/update'=> 'Student/update_student',		
 );

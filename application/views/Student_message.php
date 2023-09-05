@@ -40,7 +40,7 @@
                             <td><img src=" <?php echo base_url();?>/<?php echo $student['file_path'];?>" height="50px" width="100px" class="rounded"/></td>
                             <td><?php echo $student['student_class']; ?></td>
 							<td>
-								<a href="" class="btn btn-primary">Edit</a>
+								<button type="button" class="btn btn-primary"  data-mdb-toggle="modal" data-mdb-target="#editModal<?php echo  $student['id'];?>">Edit</button>
 								<button type="button" class="btn btn-danger"  data-mdb-toggle="modal" data-mdb-target="#deleteModal<?php echo  $student['id'];?>">Delete</button>
 							</td>
                         </tr>
@@ -49,19 +49,73 @@
 
 						<!-- Modal -->
 							<div class="modal fade" id="deleteModal<?php echo  $student['id'];?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-							<div class="modal-dialog">
-								<div class="modal-content">
-								<div class="modal-header">
-									<h5 class="modal-title" id="exampleModalLabel">Delete Student </h5>
-									<button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
-								</div>
-								<div class="modal-body">Are you sure! You delete this file</div>
-								<div class="modal-footer">
-									<button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Close</button>
-									<button type="button" id="deleteBtn" data-id="<?php echo $student['id'];?>" class="btn btn-danger">Delete Student</button>
-								</div>
+								<div class="modal-dialog">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h5 class="modal-title" id="exampleModalLabel">Delete Student </h5>
+											<button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+										</div>
+									<div class="modal-body">Are you sure! You delete this file</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Close</button>
+											<button type="button" id="deleteBtn" data-id="<?php echo $student['id'];?>" class="btn btn-danger">Delete Student</button>
+										</div>
+									</div>
 								</div>
 							</div>
+
+
+							<div class="modal fade" id="editModal<?php echo  $student['id'];?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+								<div class="modal-dialog card shadow">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h5 class="modal-title" id="exampleModalLabel">Update Student </h5>
+											<button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+										</div>
+										<div class="modal-body ">
+										<form id="editStudentForm" enctype="multipart/form-data">
+												<div class="form-group d-none">
+													<label >Student ID</label>
+													<input type="text" id="update_student_id"class="form-control" value="<?php echo $student['id'];?>">
+												</div>
+												<div class="form-group mb-3 ">
+													<label >Student Name</label>
+													<input type="text" id="update_name"class="form-control" value="<?php echo $student['name'];?>">
+												</div>
+												<div class="form-group mb-3">
+													<label for="image">Student Image</label>
+													<input type="file" id="update_image"  class="form-control">
+												</div>
+												<div class="form-group mb-3">
+													<img src="<?php echo base_url(); ?>/<?php echo $student['file_path']; ?>" alt="" class="img-fluid img-thumbnail" id="old_image" style="max-width: 200px; height: 100px;">
+												</div>
+
+
+												<div class="form-group mb-3 ">
+													<label >Class</label>
+													<select id="update_student_class" class="form-select">
+													<?php
+														$studentClass = $student['student_class'];
+														$classOptions = ["Hon's Final Year", "HSC", "SSC"];
+
+														foreach ($classOptions as $classOption) {
+															if ($classOption === $studentClass) {
+																echo "<option value='$classOption' selected>$classOption</option>";
+															} else {
+																echo "<option value='$classOption'>$classOption</option>";
+															}
+														}
+														?>
+													</select>
+												</div>
+											</form>
+										</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Close</button>
+											<button type="button" id="updateBtn"  class="btn btn-danger">Update Student</button>
+										</div>
+									</div>
+								</div>
 							</div>
                     <?php endforeach; ?>
                     </tbody>
@@ -122,6 +176,24 @@
 <script type="text/javascript">
 
 $(document).ready(function(){
+
+	// /*Update student ,,,,,,show image before upload*/
+	// $(document).on('change','#update_image',function(evt){
+	// 	this.onchange = evt => {
+	// 		const [file] = this.files
+	// 		if (file) {
+	// 			imgPreview.src = URL.createObjectURL(file)
+	// 		}
+	// 	}
+	// });
+	// /*Update student ,,,,,,show image before upload*/
+
+
+
+
+
+
+
 	$(document).on('click','#deleteBtn',function(){
 		var studentId=$(this).data('id');
 		$.ajax({
@@ -132,8 +204,7 @@ $(document).ready(function(){
                 if (response==1) {
 					//alert(response.success);
                     // Student deleted successfully
-                    // You can display a success message or refresh the page
-                    location.reload(); // Refresh the page for example
+                    location.reload(); // Refresh the page
                 } else {
                     // Error occurred
                     toastr.error('Error deleting student');
@@ -145,7 +216,11 @@ $(document).ready(function(){
             }
         });
 	});
-	/* Student Add Ajax call  */
+
+
+
+
+	
 	 //preview image beore uploaded
 	 image.onchange = evt => {
 			const [file] = image.files
@@ -153,6 +228,11 @@ $(document).ready(function(){
 				imgPreview.src = URL.createObjectURL(file)
 			}
     	}
+		
+
+
+
+	/* Student Add Ajax call  */
 	$(document).on('click','#addBtn',function(){
 		// GET the form data
 		var student_name=$("#name").val();
@@ -184,10 +264,7 @@ $(document).ready(function(){
 				processData: false,
 				success: function(response) {
 					if (response == 1) {
-						alert('Image Uploaded successfully');
-						setTimeout(() => {
-							location.reload();
-						}, 1000);
+						location.reload();
 					}else if(response == 2){alert("Large file not allow")}
 					else if(response == 3){alert("Error moving the uploaded file")}
 					else if(response == 0){alert("Invalid file extension")}
@@ -199,6 +276,74 @@ $(document).ready(function(){
 			/*Ajax calll Request End */
 		}
 	});
+
+
+
+	/* Student Update Ajax call  */
+	$(document).on('click', '#updateBtn', function (e) {
+    e.preventDefault();
+
+    // GET the form data
+    var update_student_id = $("#update_student_id").val();
+    var student_name = $("#update_name").val();
+    var update_image = $("#update_image").prop('files')[0];
+	var update_data=0;
+
+
+	var old_image = $("#old_image").attr("src");
+	//console.log(old_image);
+		var imageName = old_image.replace("<?=base_url()?>/", "");
+        
+        // remove localhost:8000/ new name image/asasd43.jpg
+        $("#old_image").attr("src", imageName);
+
+		//console.log("Image Name: " + imageName);
+
+    var update_student_class = $("#update_student_class").val();
+
+    /* Validation rules */
+    if (student_name.length == 0) {
+        alert('Name is required');
+    } else if (update_student_class.length == 0) {
+        alert('Student Class is required');
+    } else {
+        // Create a FormData object and append the data
+        var form_data = new FormData();
+        form_data.append('update_image', update_image);
+        form_data.append('old_image', imageName);
+        form_data.append('student_name', student_name);
+        form_data.append('update_student_class', update_student_class);
+        form_data.append('update_student_id', update_student_id);
+        form_data.append('update_data', update_data);
+
+        // AJAX call to update the student data
+        $.ajax({
+            type: 'POST',
+            url: '<?=base_url('student/update')?>', // Replace with your update URL
+            data: form_data,
+            dataType: 'script',
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                if (response == 1) {
+                    location.reload();
+                    // You can also reload the page or update the student data on the page if needed
+                } else {
+                    alert('Something went wrong: ' + response);
+                }
+            },
+            error: function (xhr, status, error) {
+                alert('Error: ' + error);
+            }
+        });
+    }
+});
+
+
+
+
+
 });
 
 </script>
